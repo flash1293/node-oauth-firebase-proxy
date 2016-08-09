@@ -1,12 +1,17 @@
 var express = require('express')
   , request = require('request')
   , cors = require('cors')
-  , FirebaseTokenGenerator = require("firebase-token-generator")
+  , firebase = require("firebase")
   , app = express();
 
 module.exports = function(config) {
-  var tokenGenerator = new FirebaseTokenGenerator(config.firebase_secrect);
-   
+
+  firebase.initializeApp({
+    //create a private key with https://firebase.google.com/docs/server/setup
+    serviceAccount: "serviceAccountCredentials.json",
+    databaseURL: "https://cfp-dev.firebaseio.com"
+  });
+
   app.use(cors());
    
   app.get('/', function(req, res, next){
@@ -25,8 +30,8 @@ module.exports = function(config) {
             given_name: tokenInfo.given_name,
             family_name: tokenInfo.family_name
           };
-          var firebaseToken = tokenGenerator.createToken(firebaseTokenInfo);
-          res.json({valid: true, token: firebaseToken});
+          var firebaseToken = firebase.auth().createCustomToken(firebaseTokenInfo.uid, firebaseTokenInfo);
+          res.json({valid: true, token: firebaseToken, user: firebaseTokenInfo});
         } else {
           res.json({valid: false});
         }
