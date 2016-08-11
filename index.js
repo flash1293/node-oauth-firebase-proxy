@@ -9,7 +9,7 @@ module.exports = function(config) {
   firebase.initializeApp({
     //create a private key with https://firebase.google.com/docs/server/setup
     serviceAccount: "serviceAccountCredentials.json",
-    databaseURL: "https://cfp-dev.firebaseio.com"
+    databaseURL: ""
   });
 
   app.use(cors());
